@@ -3,7 +3,7 @@
 
 namespace CNet
 {
-	bool Network::Initialize()
+	bool Network::initialize()
 	{
 		WSADATA wsaData;
 		int result = WSAStartup(MAKEWORD(2, 2), &wsaData);
@@ -21,7 +21,7 @@ namespace CNet
 
 		return true;
 	}
-	void Network::Shutdown()
+	void Network::shutdown()
 	{
 		WSACleanup();
 	}

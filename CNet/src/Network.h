@@ -7,7 +7,7 @@ namespace CNet
 	class Network
 	{
 	public:
-		static bool Initialize();
-		static void Shutdown();
+		static bool initialize();
+		static void shutdown();
 	};
 }
