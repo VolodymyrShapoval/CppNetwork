@@ -8,5 +8,6 @@ add_library(CNet STATIC
 		src/SocketHandle.h
 		src/PResult.h
 		src/IPVersion.h
+		src/Socket.h
 )
 target_include_directories(CNet PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
