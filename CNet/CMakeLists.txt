@@ -5,5 +5,7 @@ add_library(CNet STATIC
     	src/IncludeFile.h
 		src/Network.h
 		src/Network.cpp
+		src/SocketHandle.h
+		src/PResult.h
 )
 target_include_directories(CNet PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
