@@ -1,9 +1,2 @@
 #pragma once
-
-namespace cnet
-{
-    int Foo()
-    {
-        return 3;
-    }
-}
+#include "Network.h"
