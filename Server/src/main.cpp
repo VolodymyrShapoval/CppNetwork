@@ -9,7 +9,7 @@ int main()
 	{
 		std::cout << "Winsock API initialized successfully." << std::endl;
 
-		IPEndpoint test("www.google.com", 8080);
+		/*IPEndpoint test("www.google.com", 8080);
 		if (test.getIPVersion() == IPVersion::IPV4)
 		{
 			std::cout << "IP Version: IPV4" << std::endl;
@@ -26,12 +26,20 @@ int main()
 		else
 		{
 			std::cerr << "This is not an IPV4 address" << std::endl;
-		}
+		}*/
 
 		Socket socket;
 		if (socket.create() == PResult::P_SUCCESS)
 		{
 			std::cout << "Socket created successfully." << std::endl;
+			if (socket.bind(IPEndpoint("0.0.0.0", 8080)) == PResult::P_SUCCESS)
+			{
+				std::cout << "Socket successfully bound to port 4790." << std::endl;
+			}
+			else
+			{
+				std::cerr << "Failed to bind socket to port 4790." << std::endl;
+			}
 			socket.close();
 		}
 		else

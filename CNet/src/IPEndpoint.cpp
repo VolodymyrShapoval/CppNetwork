@@ -1,5 +1,5 @@
 #include "IPEndpoint.h"
-#include <WS2tcpip.h>
+#include <assert.h>
 
 namespace CNet
 {
@@ -34,7 +34,6 @@ namespace CNet
 		{
 			sockaddr_in* host_addr = reinterpret_cast<sockaddr_in*>(hostInfo->ai_addr);
 
-			//host_addr->sin_addr.S_un.S_addr = ntohl(host_addr->sin_addr.S_un.S_addr);
 			m_ipString.resize(16);
 			inet_ntop(AF_INET, &host_addr->sin_addr, &m_ipString[0], m_ipString.size());
 
@@ -74,5 +73,16 @@ namespace CNet
 	unsigned short IPEndpoint::getPort() const
 	{
 		return m_port;
+	}
+
+	sockaddr_in IPEndpoint::getSockAddrIPv4() const
+	{
+		assert(m_ipVersion == IPVersion::IPV4);
+		sockaddr_in addr = {};
+		addr.sin_family = AF_INET;
+		memcpy(&addr.sin_addr.S_un.S_addr, &m_ipBytes[0], sizeof(ULONG));
+		addr.sin_port = htons(m_port);
+
+		return addr;
 	}
 }

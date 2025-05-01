@@ -14,6 +14,7 @@ namespace CNet
 			SocketHandle handle = INVALID_SOCKET);
 		PResult create();
 		PResult close();
+		PResult bind(IPEndpoint endpoint);
 		SocketHandle getHandle();
 		IPVersion getIPVersion();
 

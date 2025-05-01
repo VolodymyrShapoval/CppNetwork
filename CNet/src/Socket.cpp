@@ -51,6 +51,18 @@ namespace CNet
         return PResult::P_SUCCESS;
     }
 
+    PResult Socket::bind(IPEndpoint endpoint)
+    {
+		sockaddr_in addr = endpoint.getSockAddrIPv4();
+		int result = ::bind(m_handle, (sockaddr*)(&addr), sizeof(sockaddr_in));
+        if (result != 0)
+        {
+			int error = WSAGetLastError();
+			return PResult::P_NOT_YET_IMPLEMENTED;
+        }
+        return PResult::P_SUCCESS;
+    }
+
     SocketHandle Socket::getHandle()
     {
 		return m_handle;
