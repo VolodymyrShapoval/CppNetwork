@@ -24,6 +24,12 @@ namespace CNet
 			int error = WSAGetLastError();
 			return PResult::P_NOT_YET_IMPLEMENTED;
         }
+
+        if (setSocketOption(SocketOption::TCP_NO_DELAY, TRUE) != PResult::P_SUCCESS)
+        {
+			return PResult::P_NOT_YET_IMPLEMENTED;
+        }
+
         return PResult::P_SUCCESS;
     }
 
@@ -53,5 +59,26 @@ namespace CNet
     IPVersion Socket::getIPVersion()
     {
 		return m_ipVersion;
+    }
+
+    PResult Socket::setSocketOption(SocketOption option, BOOL value)
+    {
+		int result = 0;
+        switch (option)
+        {
+        case SocketOption::TCP_NO_DELAY:
+			result = setsockopt(m_handle, IPPROTO_TCP, TCP_NODELAY, (const char*)&value, sizeof(value));
+            break;
+        default:
+            return PResult::P_NOT_YET_IMPLEMENTED;
+        }
+
+        if (result != 0)
+        {
+			int error = WSAGetLastError();
+			return PResult::P_NOT_YET_IMPLEMENTED;
+        }
+
+		return PResult::P_SUCCESS;
     }
 }

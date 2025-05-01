@@ -2,6 +2,7 @@
 #include "SocketHandle.h"
 #include "PResult.h"
 #include "IPVersion.h"
+#include "SocketOption.h"
 
 namespace CNet
 {
@@ -10,6 +11,7 @@ namespace CNet
 	private:
 		IPVersion m_ipVersion = IPVersion::IPV4;
 		SocketHandle m_handle = INVALID_SOCKET;
+		PResult setSocketOption(SocketOption option, BOOL value);
 
 	public:
 		Socket(IPVersion ipVersion = IPVersion::IPV4,
