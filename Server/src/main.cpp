@@ -8,6 +8,26 @@ int main()
 	if (Network::initialize())
 	{
 		std::cout << "Winsock API initialized successfully." << std::endl;
+
+		IPEndpoint test("192.168.0.2", 8080);
+		if (test.getIPVersion() == IPVersion::IPV4)
+		{
+			std::cout << "IP Version: IPV4" << std::endl;
+			std::cout << "Host Name: " << test.getHostName() << std::endl;
+			std::cout << "IP: " << test.getIPString() << std::endl;
+			std::cout << "Port: " << test.getPort() << std::endl;
+			std::cout << "IP Bytes: ";
+			for (const auto& byte : test.getIPBytes())
+			{
+				std::cout << static_cast<int>(byte) << " ";
+			}
+			std::cout << std::endl;
+		}
+		else
+		{
+			std::cerr << "This is not an IPV4 address" << std::endl;
+		}
+
 		Socket socket;
 		if (socket.create() == PResult::P_SUCCESS)
 		{

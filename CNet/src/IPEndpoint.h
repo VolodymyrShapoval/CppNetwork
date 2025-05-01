@@ -1,0 +1,25 @@
+#pragma once
+#include "IPVersion.h"
+#include <string>
+#include <vector>
+
+namespace CNet
+{
+	class IPEndpoint
+	{
+	public:
+		IPEndpoint(const char* ip, unsigned short port);
+		IPVersion getIPVersion() const;
+		std::vector<uint8_t> getIPBytes() const;
+		std::string getHostName() const;
+		std::string getIPString() const;
+		unsigned short getPort() const;
+
+	private:
+		IPVersion m_ipVersion = IPVersion::Unknown;
+		std::string m_hostName = "";
+		std::string m_ipString = "";
+		std::vector<uint8_t> m_ipBytes;
+		unsigned short m_port = 0;
+	};
+}
