@@ -9,7 +9,7 @@ int main()
 	{
 		std::cout << "Winsock API initialized successfully." << std::endl;
 
-		IPEndpoint test("192.168.0.2", 8080);
+		IPEndpoint test("www.google.com", 8080);
 		if (test.getIPVersion() == IPVersion::IPV4)
 		{
 			std::cout << "IP Version: IPV4" << std::endl;

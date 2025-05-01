@@ -25,6 +25,30 @@ namespace CNet
 			}
 		}
 
+		// Attempt to resolve the hostname to IPV4 address
+		addrinfo hints = {};
+		hints.ai_family = AF_INET; // IPv4 addresses only
+		addrinfo* hostInfo = nullptr;
+		result = getaddrinfo(ip, NULL, &hints, &hostInfo);
+		if (result == 0)
+		{
+			sockaddr_in* host_addr = reinterpret_cast<sockaddr_in*>(hostInfo->ai_addr);
+
+			//host_addr->sin_addr.S_un.S_addr = ntohl(host_addr->sin_addr.S_un.S_addr);
+			m_ipString.resize(16);
+			inet_ntop(AF_INET, &host_addr->sin_addr, &m_ipString[0], m_ipString.size());
+
+			m_hostName = ip;
+
+			ULONG ip_long = host_addr->sin_addr.S_un.S_addr;
+			m_ipBytes.resize(sizeof(ULONG));
+			memcpy(&m_ipBytes[0], &ip_long, sizeof(ULONG));
+
+			m_ipVersion = IPVersion::IPV4;
+
+			freeaddrinfo(hostInfo);
+			return;
+		}
 	}
 
 	IPVersion IPEndpoint::getIPVersion() const
