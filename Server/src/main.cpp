@@ -32,13 +32,13 @@ int main()
 		if (socket.create() == PResult::P_SUCCESS)
 		{
 			std::cout << "Socket created successfully." << std::endl;
-			if (socket.bind(IPEndpoint("0.0.0.0", 8080)) == PResult::P_SUCCESS)
+			if (socket.listen(IPEndpoint("0.0.0.0", 8080)) == PResult::P_SUCCESS)
 			{
-				std::cout << "Socket successfully bound to port 4790." << std::endl;
+				std::cout << "Socket is successfully listening on port 4790." << std::endl;
 			}
 			else
 			{
-				std::cerr << "Failed to bind socket to port 4790." << std::endl;
+				std::cerr << "Failed to listen on port 4790." << std::endl;
 			}
 			socket.close();
 		}

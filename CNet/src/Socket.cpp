@@ -63,6 +63,24 @@ namespace CNet
         return PResult::P_SUCCESS;
     }
 
+    PResult Socket::listen(IPEndpoint endpoint, int backlog)
+    {
+        if (bind(endpoint) != PResult::P_SUCCESS)
+        {
+			return PResult::P_NOT_YET_IMPLEMENTED;
+        }
+
+		int result = ::listen(m_handle, backlog);
+
+        if (result != 0)
+        {
+			int error = WSAGetLastError();
+			return PResult::P_NOT_YET_IMPLEMENTED;
+        }
+
+        return PResult::P_SUCCESS;
+    }
+
     SocketHandle Socket::getHandle()
     {
 		return m_handle;

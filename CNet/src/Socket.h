@@ -15,6 +15,7 @@ namespace CNet
 		PResult create();
 		PResult close();
 		PResult bind(IPEndpoint endpoint);
+		PResult listen(IPEndpoint endpoint, int backlog = 5);
 		SocketHandle getHandle();
 		IPVersion getIPVersion();
 
