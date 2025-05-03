@@ -139,6 +139,44 @@ namespace CNet
         return PResult::P_SUCCESS;
     }
 
+    PResult Socket::sendAll(void* data, int numberOfBytes)
+    {
+        int totalBytesSent = 0;
+
+        while (totalBytesSent < numberOfBytes)
+        {
+			int bytesRemaining = numberOfBytes - totalBytesSent;
+            int bytesSent = 0;
+			char* bufferOffset = (char*)data + totalBytesSent;
+			PResult result = send(bufferOffset, bytesRemaining, bytesSent);
+            if (result != PResult::P_SUCCESS)
+            {
+				return PResult::P_NOT_YET_IMPLEMENTED;
+            }
+			totalBytesSent += bytesSent;
+        }
+        return PResult::P_SUCCESS;
+    }
+
+    PResult Socket::receiveAll(void* destination, int numberOfBytes)
+    {
+        int totalBytesReceived = 0;
+
+        while (totalBytesReceived < numberOfBytes)
+        {
+            int bytesRemaining = numberOfBytes - totalBytesReceived;
+            int bytesReceived = 0;
+            char* bufferOffset = (char*)destination + totalBytesReceived;
+            PResult result = receive(bufferOffset, bytesRemaining, bytesReceived);
+            if (result != PResult::P_SUCCESS)
+            {
+                return PResult::P_NOT_YET_IMPLEMENTED;
+            }
+            totalBytesReceived += bytesReceived;
+        }
+        return PResult::P_SUCCESS;
+    }
+
     SocketHandle Socket::getHandle()
     {
 		return m_handle;

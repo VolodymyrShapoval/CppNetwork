@@ -17,11 +17,10 @@ int main()
 				std::cout << "Socket connected successfully." << std::endl;
 				char buffer[1024];
 				strcpy(buffer, "Hello, Server!\0");
-				int bytesSent = 0;
 				int result = PResult::P_SUCCESS;
 				while (result == PResult::P_SUCCESS)
 				{
-					result = socket.send(buffer, sizeof(buffer), bytesSent);
+					result = socket.sendAll(buffer, sizeof(buffer));
 					std::cout << "Attempting to send data..." << std::endl;
 					Sleep(500);
 				}

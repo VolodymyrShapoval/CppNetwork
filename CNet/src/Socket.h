@@ -20,6 +20,8 @@ namespace CNet
 		PResult connect(IPEndpoint endpoint);
 		PResult send(void* data, int numberOfBytes, int& bytesSent);
 		PResult receive(void* destination, int numberOfBytes, int& bytesReceived);
+		PResult sendAll(void* data, int numberOfBytes);
+		PResult receiveAll(void* destination, int numberOfBytes);
 		SocketHandle getHandle();
 		IPVersion getIPVersion();
 
