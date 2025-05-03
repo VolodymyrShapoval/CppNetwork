@@ -1,5 +1,6 @@
 #include "IPEndpoint.h"
 #include <assert.h>
+#include <iostream>
 
 namespace CNet
 {
@@ -50,6 +51,19 @@ namespace CNet
 		}
 	}
 
+	IPEndpoint::IPEndpoint(sockaddr* addr)
+	{
+		assert(addr->sa_family == AF_INET);
+		sockaddr_in* addrv4 = reinterpret_cast<sockaddr_in*>(addr);
+		m_ipVersion = IPVersion::IPV4;
+		m_port = ntohs(addrv4->sin_port);
+		m_ipBytes.resize(sizeof(ULONG));
+		memcpy(&m_ipBytes[0], &addrv4->sin_addr.S_un.S_addr, sizeof(ULONG));
+		m_ipString.resize(16);
+		inet_ntop(AF_INET, &addrv4->sin_addr, &m_ipString[0], m_ipString.size());
+		m_hostName = m_ipString;		
+	}
+
 	IPVersion IPEndpoint::getIPVersion() const
 	{
 		return m_ipVersion;
@@ -84,5 +98,30 @@ namespace CNet
 		addr.sin_port = htons(m_port);
 
 		return addr;
+	}
+	void IPEndpoint::print() const
+	{
+		std::cout << "IP Version: ";
+		switch (m_ipVersion)
+		{
+		case IPVersion::IPV4:
+			std::cout << "IPV4" << std::endl;
+			break;
+		case IPVersion::IPV6:
+			std::cout << "IPV6" << std::endl;
+			break;
+		default:
+			std::cout << "Unknown" << std::endl;
+			break;
+		}
+		std::cout << "Host Name: " << m_hostName << std::endl;
+		std::cout << "IP: " << m_ipString << std::endl;
+		std::cout << "Port: " << m_port << std::endl;
+		std::cout << "IP Bytes: ";
+		for (const auto& byte : m_ipBytes)
+		{
+			std::cout << static_cast<int>(byte) << " ";
+		}
+		std::cout << std::endl;
 	}
 }

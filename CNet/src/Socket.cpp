@@ -1,5 +1,6 @@
 #include "Socket.h"
 #include "assert.h"
+#include <iostream>
 
 namespace CNet
 {
@@ -83,13 +84,17 @@ namespace CNet
 
     PResult Socket::accept(Socket& clientSocket)
     {
-		SocketHandle acceptedConnectionHandle = ::accept(m_handle, nullptr, nullptr);
+        sockaddr_in addr = {};
+		int len = sizeof(sockaddr_in);
+		SocketHandle acceptedConnectionHandle = ::accept(m_handle, (sockaddr*)(&addr), &len);
         if (acceptedConnectionHandle == INVALID_SOCKET)
         {
 			int error = WSAGetLastError();
 			return PResult::P_NOT_YET_IMPLEMENTED;
         }
-
+		IPEndpoint newConnectionIPEndpoint((sockaddr*)(&addr));
+		std::cout << "New connection accepted:" << std::endl;
+		newConnectionIPEndpoint.print();
 		clientSocket = Socket(IPVersion::IPV4, acceptedConnectionHandle);
         return PResult::P_SUCCESS;
     }

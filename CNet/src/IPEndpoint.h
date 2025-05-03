@@ -10,12 +10,14 @@ namespace CNet
 	{
 	public:
 		IPEndpoint(const char* ip, unsigned short port);
+		IPEndpoint(sockaddr* addr);
 		IPVersion getIPVersion() const;
 		std::vector<uint8_t> getIPBytes() const;
 		std::string getHostName() const;
 		std::string getIPString() const;
 		unsigned short getPort() const;
 		sockaddr_in getSockAddrIPv4() const;
+		void print() const;
 
 	private:
 		IPVersion m_ipVersion = IPVersion::Unknown;
