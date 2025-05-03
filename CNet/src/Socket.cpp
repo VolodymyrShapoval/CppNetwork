@@ -16,19 +16,19 @@ namespace CNet
 
 		if (m_handle != INVALID_SOCKET)
 		{
-			return PResult::P_NOT_YET_IMPLEMENTED;
+			return PResult::P_GENERIC_ERROR;
 		}
 
 		m_handle = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
         if (m_handle == INVALID_SOCKET)
         {
 			int error = WSAGetLastError();
-			return PResult::P_NOT_YET_IMPLEMENTED;
+			return PResult::P_GENERIC_ERROR;
         }
 
         if (setSocketOption(SocketOption::TCP_NO_DELAY, TRUE) != PResult::P_SUCCESS)
         {
-			return PResult::P_NOT_YET_IMPLEMENTED;
+			return PResult::P_GENERIC_ERROR;
         }
 
         return PResult::P_SUCCESS;
@@ -38,14 +38,14 @@ namespace CNet
     {
         if (m_handle == INVALID_SOCKET)
         {
-			return PResult::P_NOT_YET_IMPLEMENTED;
+			return PResult::P_GENERIC_ERROR;
         }
 
 		int result = closesocket(m_handle);
         if (result != 0)
         {
 			int error = WSAGetLastError();
-			return PResult::P_NOT_YET_IMPLEMENTED;
+			return PResult::P_GENERIC_ERROR;
         }
 
 		m_handle = INVALID_SOCKET;
@@ -59,7 +59,7 @@ namespace CNet
         if (result != 0)
         {
 			int error = WSAGetLastError();
-			return PResult::P_NOT_YET_IMPLEMENTED;
+			return PResult::P_GENERIC_ERROR;
         }
         return PResult::P_SUCCESS;
     }
@@ -68,7 +68,7 @@ namespace CNet
     {
         if (bind(endpoint) != PResult::P_SUCCESS)
         {
-			return PResult::P_NOT_YET_IMPLEMENTED;
+			return PResult::P_GENERIC_ERROR;
         }
 
 		int result = ::listen(m_handle, backlog);
@@ -76,7 +76,7 @@ namespace CNet
         if (result != 0)
         {
 			int error = WSAGetLastError();
-			return PResult::P_NOT_YET_IMPLEMENTED;
+			return PResult::P_GENERIC_ERROR;
         }
 
         return PResult::P_SUCCESS;
@@ -90,7 +90,7 @@ namespace CNet
         if (acceptedConnectionHandle == INVALID_SOCKET)
         {
 			int error = WSAGetLastError();
-			return PResult::P_NOT_YET_IMPLEMENTED;
+			return PResult::P_GENERIC_ERROR;
         }
 		IPEndpoint newConnectionIPEndpoint((sockaddr*)(&addr));
 		std::cout << "New connection accepted:" << std::endl;
@@ -106,18 +106,18 @@ namespace CNet
         if (result != 0)
         {
 			int error = WSAGetLastError();
-			return PResult::P_NOT_YET_IMPLEMENTED;
+			return PResult::P_GENERIC_ERROR;
         }
         return PResult::P_SUCCESS;
     }
 
-    PResult Socket::send(void* data, int numberOfBytes, int& bytesSent)
+    PResult Socket::send(const void* data, int numberOfBytes, int& bytesSent)
     {
 		bytesSent = ::send(m_handle, (const char*)data, numberOfBytes, NULL);
         if (bytesSent == SOCKET_ERROR)
         {
 			int error = WSAGetLastError();
-			return PResult::P_NOT_YET_IMPLEMENTED;
+			return PResult::P_GENERIC_ERROR;
         }
 
         return PResult::P_SUCCESS;
@@ -128,18 +128,18 @@ namespace CNet
 		bytesReceived = ::recv(m_handle, (char*)destination, numberOfBytes, NULL);
         if (bytesReceived == 0)
         {
-			return PResult::P_NOT_YET_IMPLEMENTED;
+			return PResult::P_GENERIC_ERROR;
         }
         if (bytesReceived == SOCKET_ERROR)
         {
 			int error = WSAGetLastError();
-			return PResult::P_NOT_YET_IMPLEMENTED;
+			return PResult::P_GENERIC_ERROR;
         }
 
         return PResult::P_SUCCESS;
     }
 
-    PResult Socket::sendAll(void* data, int numberOfBytes)
+    PResult Socket::sendAll(const void* data, int numberOfBytes)
     {
         int totalBytesSent = 0;
 
@@ -151,7 +151,7 @@ namespace CNet
 			PResult result = send(bufferOffset, bytesRemaining, bytesSent);
             if (result != PResult::P_SUCCESS)
             {
-				return PResult::P_NOT_YET_IMPLEMENTED;
+				return PResult::P_GENERIC_ERROR;
             }
 			totalBytesSent += bytesSent;
         }
@@ -170,7 +170,7 @@ namespace CNet
             PResult result = receive(bufferOffset, bytesRemaining, bytesReceived);
             if (result != PResult::P_SUCCESS)
             {
-                return PResult::P_NOT_YET_IMPLEMENTED;
+                return PResult::P_GENERIC_ERROR;
             }
             totalBytesReceived += bytesReceived;
         }
@@ -196,13 +196,13 @@ namespace CNet
 			result = setsockopt(m_handle, IPPROTO_TCP, TCP_NODELAY, (const char*)&value, sizeof(value));
             break;
         default:
-            return PResult::P_NOT_YET_IMPLEMENTED;
+            return PResult::P_GENERIC_ERROR;
         }
 
         if (result != 0)
         {
 			int error = WSAGetLastError();
-			return PResult::P_NOT_YET_IMPLEMENTED;
+			return PResult::P_GENERIC_ERROR;
         }
 
 		return PResult::P_SUCCESS;

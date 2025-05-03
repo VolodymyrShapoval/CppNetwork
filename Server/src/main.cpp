@@ -1,5 +1,6 @@
 #include <iostream>
 #include "IncludeFile.h"
+#include "Constants.h"
 
 using namespace CNet;
 
@@ -8,25 +9,6 @@ int main()
 	if (Network::initialize())
 	{
 		std::cout << "Winsock API initialized successfully." << std::endl;
-
-		/*IPEndpoint test("www.google.com", 8080);
-		if (test.getIPVersion() == IPVersion::IPV4)
-		{
-			std::cout << "IP Version: IPV4" << std::endl;
-			std::cout << "Host Name: " << test.getHostName() << std::endl;
-			std::cout << "IP: " << test.getIPString() << std::endl;
-			std::cout << "Port: " << test.getPort() << std::endl;
-			std::cout << "IP Bytes: ";
-			for (const auto& byte : test.getIPBytes())
-			{
-				std::cout << static_cast<int>(byte) << " ";
-			}
-			std::cout << std::endl;
-		}
-		else
-		{
-			std::cerr << "This is not an IPV4 address" << std::endl;
-		}*/
 
 		Socket socket;
 		if (socket.create() == PResult::P_SUCCESS)
@@ -38,16 +20,29 @@ int main()
 				Socket newConnection;
 				if (socket.accept(newConnection) == PResult::P_SUCCESS)
 				{
-					char buffer[1024];
-					int result = PResult::P_SUCCESS;
-					while (result == PResult::P_SUCCESS)
+					std::string buffer = "";
+					while (true)
 					{
-						result = newConnection.receiveAll(buffer, sizeof(buffer));
+						uint32_t bufferSize = 0;
+						int result = newConnection.receiveAll(&bufferSize, sizeof(uint32_t));
 						if (result != PResult::P_SUCCESS)
 						{
 							break;
 						}
-						std::cout << "Received data: " << buffer << std::endl;
+						bufferSize = ntohl(bufferSize);
+
+						if (bufferSize > g_MAX_PACKET_SIZE)
+						{
+							break;
+						}
+
+						buffer.resize(bufferSize);
+						result = newConnection.receiveAll(&buffer[0], bufferSize);
+						if (result != PResult::P_SUCCESS)
+						{
+							break;
+						}
+						std::cout << "[" << bufferSize << "] - " << buffer << std::endl;
 					}
 					newConnection.close();
 				}

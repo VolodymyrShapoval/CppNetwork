@@ -4,6 +4,7 @@
 #include "IPVersion.h"
 #include "SocketOption.h"
 #include "IPEndpoint.h"
+#include "Constants.h"
 
 namespace CNet
 {
@@ -18,9 +19,9 @@ namespace CNet
 		PResult listen(IPEndpoint endpoint, int backlog = 5);
 		PResult accept(Socket& clientSocket);
 		PResult connect(IPEndpoint endpoint);
-		PResult send(void* data, int numberOfBytes, int& bytesSent);
+		PResult send(const void* data, int numberOfBytes, int& bytesSent);
 		PResult receive(void* destination, int numberOfBytes, int& bytesReceived);
-		PResult sendAll(void* data, int numberOfBytes);
+		PResult sendAll(const void* data, int numberOfBytes);
 		PResult receiveAll(void* destination, int numberOfBytes);
 		SocketHandle getHandle();
 		IPVersion getIPVersion();

@@ -12,5 +12,7 @@ add_library(CNet STATIC
 		src/Socket.cpp
 		src/SocketOption.h
 		src/IPEndpoint.h
+		src/IPEndpoint.cpp
+		src/Constants.h
 )
 target_include_directories(CNet PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)

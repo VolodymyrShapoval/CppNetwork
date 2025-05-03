@@ -5,6 +5,6 @@ namespace CNet
 	enum PResult
 	{
 		P_SUCCESS,
-		P_NOT_YET_IMPLEMENTED
+		P_GENERIC_ERROR
 	};
 }
