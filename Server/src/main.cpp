@@ -38,7 +38,19 @@ int main()
 				Socket newConnection;
 				if (socket.accept(newConnection) == PResult::P_SUCCESS)
 				{
-					std::cout << "Socket accepted a connection." << std::endl;
+					char buffer[1024];
+					int bytesReceived = 0;
+					int result = PResult::P_SUCCESS;
+					while (result == PResult::P_SUCCESS)
+					{
+						result = newConnection.receive(buffer, sizeof(buffer), bytesReceived);
+						if (result != PResult::P_SUCCESS)
+						{
+							break;
+						}
+						std::cout << "Received data: " << buffer << std::endl;
+						std::cout << "Bytes received: " << bytesReceived << std::endl;
+					}
 					newConnection.close();
 				}
 				else

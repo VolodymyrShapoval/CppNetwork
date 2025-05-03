@@ -18,6 +18,8 @@ namespace CNet
 		PResult listen(IPEndpoint endpoint, int backlog = 5);
 		PResult accept(Socket& clientSocket);
 		PResult connect(IPEndpoint endpoint);
+		PResult send(void* data, int numberOfBytes, int& bytesSent);
+		PResult receive(void* destination, int numberOfBytes, int& bytesReceived);
 		SocketHandle getHandle();
 		IPVersion getIPVersion();
 

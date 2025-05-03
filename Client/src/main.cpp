@@ -15,6 +15,16 @@ int main()
 			if (socket.connect(IPEndpoint("127.0.0.1", 8080)) == PResult::P_SUCCESS)
 			{
 				std::cout << "Socket connected successfully." << std::endl;
+				char buffer[1024];
+				strcpy(buffer, "Hello, Server!\0");
+				int bytesSent = 0;
+				int result = PResult::P_SUCCESS;
+				while (result == PResult::P_SUCCESS)
+				{
+					result = socket.send(buffer, sizeof(buffer), bytesSent);
+					std::cout << "Attempting to send data..." << std::endl;
+					Sleep(500);
+				}
 			}
 			else
 			{

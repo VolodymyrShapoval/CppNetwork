@@ -111,6 +111,34 @@ namespace CNet
         return PResult::P_SUCCESS;
     }
 
+    PResult Socket::send(void* data, int numberOfBytes, int& bytesSent)
+    {
+		bytesSent = ::send(m_handle, (const char*)data, numberOfBytes, NULL);
+        if (bytesSent == SOCKET_ERROR)
+        {
+			int error = WSAGetLastError();
+			return PResult::P_NOT_YET_IMPLEMENTED;
+        }
+
+        return PResult::P_SUCCESS;
+    }
+
+    PResult Socket::receive(void* destination, int numberOfBytes, int& bytesReceived)
+    {
+		bytesReceived = ::recv(m_handle, (char*)destination, numberOfBytes, NULL);
+        if (bytesReceived == 0)
+        {
+			return PResult::P_NOT_YET_IMPLEMENTED;
+        }
+        if (bytesReceived == SOCKET_ERROR)
+        {
+			int error = WSAGetLastError();
+			return PResult::P_NOT_YET_IMPLEMENTED;
+        }
+
+        return PResult::P_SUCCESS;
+    }
+
     SocketHandle Socket::getHandle()
     {
 		return m_handle;

@@ -99,6 +99,7 @@ namespace CNet
 
 		return addr;
 	}
+
 	void IPEndpoint::print() const
 	{
 		std::cout << "IP Version: ";
