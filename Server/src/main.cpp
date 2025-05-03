@@ -35,6 +35,16 @@ int main()
 			if (socket.listen(IPEndpoint("0.0.0.0", 8080)) == PResult::P_SUCCESS)
 			{
 				std::cout << "Socket is successfully listening on port 4790." << std::endl;
+				Socket newConnection;
+				if (socket.accept(newConnection) == PResult::P_SUCCESS)
+				{
+					std::cout << "Socket accepted a connection." << std::endl;
+					newConnection.close();
+				}
+				else
+				{
+					std::cerr << "Failed to accept a connection." << std::endl;
+				}
 			}
 			else
 			{

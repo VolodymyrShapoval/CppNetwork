@@ -81,6 +81,19 @@ namespace CNet
         return PResult::P_SUCCESS;
     }
 
+    PResult Socket::accept(Socket& clientSocket)
+    {
+		SocketHandle acceptedConnectionHandle = ::accept(m_handle, nullptr, nullptr);
+        if (acceptedConnectionHandle == INVALID_SOCKET)
+        {
+			int error = WSAGetLastError();
+			return PResult::P_NOT_YET_IMPLEMENTED;
+        }
+
+		clientSocket = Socket(IPVersion::IPV4, acceptedConnectionHandle);
+        return PResult::P_SUCCESS;
+    }
+
     SocketHandle Socket::getHandle()
     {
 		return m_handle;
