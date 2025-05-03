@@ -16,11 +16,12 @@ int main()
 			if (socket.connect(IPEndpoint("127.0.0.1", 8080)) == PResult::P_SUCCESS)
 			{
 				std::cout << "Socket connected successfully." << std::endl;
-				std::cout << "Enter message: ";
+				
 				std::string buffer = "";
-				std::getline(std::cin, buffer);
 				while (true)
 				{
+					std::cout << "Enter message: ";
+					std::getline(std::cin, buffer);
 					uint32_t bufferSize = buffer.size();
 					bufferSize = htonl(bufferSize);
 					int result = socket.sendAll(&bufferSize, sizeof(uint32_t));
