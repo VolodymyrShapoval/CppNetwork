@@ -5,7 +5,7 @@
 namespace CNet
 {
     TCPSocket::TCPSocket(IPVersion ipVersion, SocketHandle handle)
-		: m_ipVersion(ipVersion), m_handle(handle)
+		: Socket(ipVersion, handle)
     {
 		assert(ipVersion == IPVersion::IPV4);
     }
@@ -56,18 +56,6 @@ namespace CNet
         }
 
 		m_handle = INVALID_SOCKET;
-        return PResult::P_SUCCESS;
-    }
-
-    PResult TCPSocket::bind(IPEndpoint endpoint)
-    {
-		sockaddr_in addr = endpoint.getSockAddrIPv4();
-		int result = ::bind(m_handle, (sockaddr*)(&addr), sizeof(sockaddr_in));
-        if (result != 0)
-        {
-			int error = WSAGetLastError();
-			return PResult::P_GENERIC_ERROR;
-        }
         return PResult::P_SUCCESS;
     }
 
@@ -182,16 +170,6 @@ namespace CNet
             totalBytesReceived += bytesReceived;
         }
         return PResult::P_SUCCESS;
-    }
-
-    SocketHandle TCPSocket::getHandle()
-    {
-		return m_handle;
-    }
-
-    IPVersion TCPSocket::getIPVersion()
-    {
-		return m_ipVersion;
     }
 
     PResult TCPSocket::setSocketOption(SocketOption option, BOOL value)

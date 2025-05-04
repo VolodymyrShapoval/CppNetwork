@@ -2,6 +2,13 @@
 
 namespace CNet
 {
+    Socket::Socket(IPVersion ipVersion, SocketHandle handle) : 
+        m_ipVersion(ipVersion), m_handle(handle) { }
+
+    PResult Socket::create()
+    {
+        return PResult();
+    }
     PResult Socket::bind(IPEndpoint endpoint)
     {
         sockaddr_in addr = endpoint.getSockAddrIPv4();

@@ -10,10 +10,9 @@ namespace CNet
 	public:
 		TCPSocket(IPVersion ipVersion = IPVersion::IPV4,
 			SocketHandle handle = INVALID_SOCKET);
+
 		PResult create() override;
 		PResult close() override;
-		PResult bind(IPEndpoint endpoint) override;
-
 		PResult listen(IPEndpoint endpoint, int backlog = 5);
 		PResult accept(TCPSocket& clientSocket);
 		PResult connect(IPEndpoint endpoint);
@@ -22,12 +21,7 @@ namespace CNet
 		PResult sendAll(const void* data, int numberOfBytes);
 		PResult receiveAll(void* destination, int numberOfBytes);
 
-		SocketHandle getHandle() override;
-		IPVersion getIPVersion() override;
-
 	private:
-		IPVersion m_ipVersion = IPVersion::IPV4;
-		SocketHandle m_handle = INVALID_SOCKET;
-		PResult setSocketOption(SocketOption option, BOOL value);
+		PResult setSocketOption(SocketOption option, BOOL value) override;
 	};
 }

@@ -10,16 +10,17 @@ namespace CNet
 	class Socket
 	{
 	public:
+		Socket(IPVersion ipVersion, SocketHandle handle);
 		virtual PResult create();
-		virtual PResult close();
+		virtual PResult close() = 0;
 		virtual PResult bind(IPEndpoint endpoint);
 		virtual SocketHandle getHandle();
 		virtual IPVersion getIPVersion();
 
-	private:
+	protected:
 		IPVersion m_ipVersion = IPVersion::IPV4;
 		SocketHandle m_handle = INVALID_SOCKET;
 
-		virtual PResult setSocketOption(SocketOption option, BOOL value);
+		virtual PResult setSocketOption(SocketOption option, BOOL value) = 0;
 	};
 }
