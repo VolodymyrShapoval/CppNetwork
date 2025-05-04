@@ -41,7 +41,14 @@ namespace CNet
 			return PResult::P_GENERIC_ERROR;
         }
 
-		int result = closesocket(m_handle);
+		int result = shutdown(m_handle, SD_BOTH);
+		if (result != 0)
+		{
+			int error = WSAGetLastError();
+			return PResult::P_GENERIC_ERROR;
+		}
+
+		result = closesocket(m_handle);
         if (result != 0)
         {
 			int error = WSAGetLastError();
