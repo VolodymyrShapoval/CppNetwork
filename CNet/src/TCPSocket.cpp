@@ -178,7 +178,7 @@ namespace CNet
         switch (option)
         {
         case SocketOption::TCP_NO_DELAY:
-			result = setsockopt(m_handle, IPPROTO_TCP, TCP_NODELAY, (const char*)&value, sizeof(value));
+			result = setsockopt(m_handle, IPPROTO_TCP, TCP_NODELAY, (const char*)&value, sizeof(int));
             break;
         default:
             return PResult::P_GENERIC_ERROR;

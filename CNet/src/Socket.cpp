@@ -5,10 +5,6 @@ namespace CNet
     Socket::Socket(IPVersion ipVersion, SocketHandle handle) : 
         m_ipVersion(ipVersion), m_handle(handle) { }
 
-    PResult Socket::create()
-    {
-        return PResult();
-    }
     PResult Socket::bind(IPEndpoint endpoint)
     {
         sockaddr_in addr = endpoint.getSockAddrIPv4();
@@ -29,5 +25,10 @@ namespace CNet
     IPVersion Socket::getIPVersion()
     {
         return m_ipVersion;
+    }
+
+    PResult Socket::setSocketOption(SocketOption option, BOOL value)
+    {
+        return PResult::P_GENERIC_ERROR;
     }
 }

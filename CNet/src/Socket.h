@@ -11,7 +11,7 @@ namespace CNet
 	{
 	public:
 		Socket(IPVersion ipVersion, SocketHandle handle);
-		virtual PResult create();
+		virtual PResult create() = 0;
 		virtual PResult close() = 0;
 		virtual PResult bind(IPEndpoint endpoint);
 		virtual SocketHandle getHandle();
@@ -21,6 +21,6 @@ namespace CNet
 		IPVersion m_ipVersion = IPVersion::IPV4;
 		SocketHandle m_handle = INVALID_SOCKET;
 
-		virtual PResult setSocketOption(SocketOption option, BOOL value) = 0;
+		virtual PResult setSocketOption(SocketOption option, BOOL value);
 	};
 }

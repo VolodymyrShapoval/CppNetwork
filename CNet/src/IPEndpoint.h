@@ -9,6 +9,7 @@ namespace CNet
 	class IPEndpoint
 	{
 	public:
+		IPEndpoint() = default;
 		IPEndpoint(const char* ip, unsigned short port);
 		IPEndpoint(sockaddr* addr);
 		IPVersion getIPVersion() const;

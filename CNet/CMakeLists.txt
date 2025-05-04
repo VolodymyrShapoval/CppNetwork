@@ -13,6 +13,8 @@ add_library(CNet STATIC
 		src/TCPSocket.h
 		src/TCPSocket.cpp
 		src/TCPSocketOption.h
+		src/UDPSocket.h
+		src/UDPSocket.cpp
 		src/IPEndpoint.h
 		src/IPEndpoint.cpp
 		src/Constants.h
