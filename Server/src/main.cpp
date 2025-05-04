@@ -10,14 +10,14 @@ int main()
 	{
 		std::cout << "Winsock API initialized successfully." << std::endl;
 
-		Socket socket;
+		TCPSocket socket;
 		if (socket.create() == PResult::P_SUCCESS)
 		{
 			std::cout << "Socket created successfully." << std::endl;
 			if (socket.listen(IPEndpoint("0.0.0.0", 8080)) == PResult::P_SUCCESS)
 			{
 				std::cout << "Socket is successfully listening on port 8080." << std::endl;
-				Socket newConnection;
+				TCPSocket newConnection;
 				if (socket.accept(newConnection) == PResult::P_SUCCESS)
 				{
 					std::string buffer = "";

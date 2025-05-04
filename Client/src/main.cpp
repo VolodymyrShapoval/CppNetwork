@@ -9,7 +9,7 @@ int main()
 	if (Network::initialize())
 	{
 		std::cout << "Winsock API initialized successfully." << std::endl;
-		Socket socket;
+		TCPSocket socket;
 		if (socket.create() == PResult::P_SUCCESS)
 		{
 			std::cout << "Socket created successfully." << std::endl;

@@ -2,22 +2,22 @@
 #include "SocketHandle.h"
 #include "PResult.h"
 #include "IPVersion.h"
-#include "SocketOption.h"
+#include "TCPSocketOption.h"
 #include "IPEndpoint.h"
 #include "Constants.h"
 
 namespace CNet
 {
-	class Socket
+	class TCPSocket
 	{
 	public:
-		Socket(IPVersion ipVersion = IPVersion::IPV4,
+		TCPSocket(IPVersion ipVersion = IPVersion::IPV4,
 			SocketHandle handle = INVALID_SOCKET);
 		PResult create();
 		PResult close();
 		PResult bind(IPEndpoint endpoint);
 		PResult listen(IPEndpoint endpoint, int backlog = 5);
-		PResult accept(Socket& clientSocket);
+		PResult accept(TCPSocket& clientSocket);
 		PResult connect(IPEndpoint endpoint);
 		PResult send(const void* data, int numberOfBytes, int& bytesSent);
 		PResult receive(void* destination, int numberOfBytes, int& bytesReceived);

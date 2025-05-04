@@ -8,9 +8,9 @@ add_library(CNet STATIC
 		src/SocketHandle.h
 		src/PResult.h
 		src/IPVersion.h
-		src/Socket.h
-		src/Socket.cpp
-		src/SocketOption.h
+		src/TCPSocket.h
+		src/TCPSocket.cpp
+		src/TCPSocketOption.h
 		src/IPEndpoint.h
 		src/IPEndpoint.cpp
 		src/Constants.h

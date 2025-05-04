@@ -1,16 +1,16 @@
-#include "Socket.h"
+#include "TCPSocket.h"
 #include "assert.h"
 #include <iostream>
 
 namespace CNet
 {
-    Socket::Socket(IPVersion ipVersion, SocketHandle handle)
+    TCPSocket::TCPSocket(IPVersion ipVersion, SocketHandle handle)
 		: m_ipVersion(ipVersion), m_handle(handle)
     {
 		assert(ipVersion == IPVersion::IPV4);
     }
 
-    PResult Socket::create()
+    PResult TCPSocket::create()
     {
 		assert(m_ipVersion == IPVersion::IPV4);
 
@@ -34,7 +34,7 @@ namespace CNet
         return PResult::P_SUCCESS;
     }
 
-    PResult Socket::close()
+    PResult TCPSocket::close()
     {
         if (m_handle == INVALID_SOCKET)
         {
@@ -59,7 +59,7 @@ namespace CNet
         return PResult::P_SUCCESS;
     }
 
-    PResult Socket::bind(IPEndpoint endpoint)
+    PResult TCPSocket::bind(IPEndpoint endpoint)
     {
 		sockaddr_in addr = endpoint.getSockAddrIPv4();
 		int result = ::bind(m_handle, (sockaddr*)(&addr), sizeof(sockaddr_in));
@@ -71,7 +71,7 @@ namespace CNet
         return PResult::P_SUCCESS;
     }
 
-    PResult Socket::listen(IPEndpoint endpoint, int backlog)
+    PResult TCPSocket::listen(IPEndpoint endpoint, int backlog)
     {
         if (bind(endpoint) != PResult::P_SUCCESS)
         {
@@ -89,7 +89,7 @@ namespace CNet
         return PResult::P_SUCCESS;
     }
 
-    PResult Socket::accept(Socket& clientSocket)
+    PResult TCPSocket::accept(TCPSocket& clientSocket)
     {
         sockaddr_in addr = {};
 		int len = sizeof(sockaddr_in);
@@ -102,11 +102,11 @@ namespace CNet
 		IPEndpoint newConnectionIPEndpoint((sockaddr*)(&addr));
 		std::cout << "New connection accepted:" << std::endl;
 		newConnectionIPEndpoint.print();
-		clientSocket = Socket(IPVersion::IPV4, acceptedConnectionHandle);
+		clientSocket = TCPSocket(IPVersion::IPV4, acceptedConnectionHandle);
         return PResult::P_SUCCESS;
     }
 
-    PResult Socket::connect(IPEndpoint endpoint)
+    PResult TCPSocket::connect(IPEndpoint endpoint)
     {
 		sockaddr_in addr = endpoint.getSockAddrIPv4();
 		int result = ::connect(m_handle, (sockaddr*)(&addr), sizeof(sockaddr_in));
@@ -118,7 +118,7 @@ namespace CNet
         return PResult::P_SUCCESS;
     }
 
-    PResult Socket::send(const void* data, int numberOfBytes, int& bytesSent)
+    PResult TCPSocket::send(const void* data, int numberOfBytes, int& bytesSent)
     {
 		bytesSent = ::send(m_handle, (const char*)data, numberOfBytes, NULL);
         if (bytesSent == SOCKET_ERROR)
@@ -130,7 +130,7 @@ namespace CNet
         return PResult::P_SUCCESS;
     }
 
-    PResult Socket::receive(void* destination, int numberOfBytes, int& bytesReceived)
+    PResult TCPSocket::receive(void* destination, int numberOfBytes, int& bytesReceived)
     {
 		bytesReceived = ::recv(m_handle, (char*)destination, numberOfBytes, NULL);
         if (bytesReceived == 0)
@@ -146,7 +146,7 @@ namespace CNet
         return PResult::P_SUCCESS;
     }
 
-    PResult Socket::sendAll(const void* data, int numberOfBytes)
+    PResult TCPSocket::sendAll(const void* data, int numberOfBytes)
     {
         int totalBytesSent = 0;
 
@@ -165,7 +165,7 @@ namespace CNet
         return PResult::P_SUCCESS;
     }
 
-    PResult Socket::receiveAll(void* destination, int numberOfBytes)
+    PResult TCPSocket::receiveAll(void* destination, int numberOfBytes)
     {
         int totalBytesReceived = 0;
 
@@ -184,17 +184,17 @@ namespace CNet
         return PResult::P_SUCCESS;
     }
 
-    SocketHandle Socket::getHandle()
+    SocketHandle TCPSocket::getHandle()
     {
 		return m_handle;
     }
 
-    IPVersion Socket::getIPVersion()
+    IPVersion TCPSocket::getIPVersion()
     {
 		return m_ipVersion;
     }
 
-    PResult Socket::setSocketOption(SocketOption option, BOOL value)
+    PResult TCPSocket::setSocketOption(SocketOption option, BOOL value)
     {
 		int result = 0;
         switch (option)
