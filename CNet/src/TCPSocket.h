@@ -1,21 +1,19 @@
 #pragma once
-#include "SocketHandle.h"
-#include "PResult.h"
-#include "IPVersion.h"
+#include "Socket.h"
 #include "TCPSocketOption.h"
-#include "IPEndpoint.h"
 #include "Constants.h"
 
 namespace CNet
 {
-	class TCPSocket
+	class TCPSocket : public Socket
 	{
 	public:
 		TCPSocket(IPVersion ipVersion = IPVersion::IPV4,
 			SocketHandle handle = INVALID_SOCKET);
-		PResult create();
-		PResult close();
-		PResult bind(IPEndpoint endpoint);
+		PResult create() override;
+		PResult close() override;
+		PResult bind(IPEndpoint endpoint) override;
+
 		PResult listen(IPEndpoint endpoint, int backlog = 5);
 		PResult accept(TCPSocket& clientSocket);
 		PResult connect(IPEndpoint endpoint);
@@ -23,8 +21,9 @@ namespace CNet
 		PResult receive(void* destination, int numberOfBytes, int& bytesReceived);
 		PResult sendAll(const void* data, int numberOfBytes);
 		PResult receiveAll(void* destination, int numberOfBytes);
-		SocketHandle getHandle();
-		IPVersion getIPVersion();
+
+		SocketHandle getHandle() override;
+		IPVersion getIPVersion() override;
 
 	private:
 		IPVersion m_ipVersion = IPVersion::IPV4;
