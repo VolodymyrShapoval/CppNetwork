@@ -2,8 +2,10 @@
 #include "IncludeFile.h"
 #include "Constants.h"
 #include <UDPSocket.h>
+#include <mutex>
 
 using namespace CNet;
+std::mutex consoleMutex;
 
 void TCPServer();
 void UDPServer();
@@ -17,6 +19,60 @@ int main()
 	Network::shutdown();
 	system("pause");
 	return 0;
+}
+
+// ------------- TCP --------------------------------
+
+void StartReceiveLoop(TCPSocket& connection)
+{
+	std::string buffer;
+	while (true)
+	{
+		uint32_t bufferSize = 0;
+		int result = connection.receiveAll(&bufferSize, sizeof(uint32_t));
+		if (result != PResult::P_SUCCESS)
+			break;
+
+		bufferSize = ntohl(bufferSize);
+		if (bufferSize > g_MAX_PACKET_SIZE)
+			break;
+
+		buffer.resize(bufferSize);
+		result = connection.receiveAll(&buffer[0], bufferSize);
+		if (result != PResult::P_SUCCESS)
+			break;
+
+		std::lock_guard<std::mutex> lock(consoleMutex);
+		std::cout << "\r\33[K"; // Очистити поточний рядок
+		std::cout << "[Client] " << buffer << std::endl;
+		std::cout << "Enter message: " << std::flush;
+	}
+}
+
+void StartSendLoop(TCPSocket& connection)
+{
+	std::string message;
+	while (true)
+	{
+		{
+			std::lock_guard<std::mutex> lock(consoleMutex);
+			std::cout << "Enter message: " << std::flush;
+		}
+
+		std::getline(std::cin, message);
+		if (message.empty())
+			continue;
+
+		if (message == "exit")
+			break;
+
+		uint32_t size = htonl(static_cast<uint32_t>(message.size()));
+		if (connection.sendAll(&size, sizeof(uint32_t)) != PResult::P_SUCCESS)
+			break;
+
+		if (connection.sendAll(message.data(), message.size()) != PResult::P_SUCCESS)
+			break;
+	}
 }
 
 void TCPServer()
@@ -33,31 +89,14 @@ void TCPServer()
 			TCPSocket newConnection;
 			if (socket.accept(newConnection) == PResult::P_SUCCESS)
 			{
-				std::string buffer = "";
-				while (true)
-				{
-					uint32_t bufferSize = 0;
-					int result = newConnection.receiveAll(&bufferSize, sizeof(uint32_t));
-					if (result != PResult::P_SUCCESS)
-					{
-						break;
-					}
-					bufferSize = ntohl(bufferSize);
+				std::cout << std::string(20, '-') << std::endl;
+				std::cout << "Client connected." << std::endl;
 
-					if (bufferSize > g_MAX_PACKET_SIZE)
-					{
-						break;
-					}
+				std::thread receiverThread(StartReceiveLoop, std::ref(newConnection));
+				StartSendLoop(newConnection);
 
-					buffer.resize(bufferSize);
-					result = newConnection.receiveAll(&buffer[0], bufferSize);
-					if (result != PResult::P_SUCCESS)
-					{
-						break;
-					}
-					std::cout << "[" << bufferSize << "] - " << buffer << std::endl;
-				}
 				newConnection.close();
+				receiverThread.join();
 			}
 			else
 			{
@@ -75,6 +114,8 @@ void TCPServer()
 		std::cerr << "Failed to create socket." << std::endl;
 	}
 }
+
+// ------------- UDP --------------------------------
 
 void UDPServer()
 {
