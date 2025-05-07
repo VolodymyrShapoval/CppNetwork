@@ -4,12 +4,16 @@
 #include <UDPSocket.h>
 #include <thread>
 #include <mutex>
+#include <chrono>
+#include <cmath>
 
 using namespace CNet;
 
 std::mutex consoleMutex;
 
 void TCPClient();
+PResult TCPSendWithBenchmarking(TCPSocket& socket, const uint64_t messageSize);
+void TCPClientWithBenchmarking();
 //void UDPClient();
 void UDPClient(const std::string& remoteIP, uint16_t remotePort, uint16_t localPort);
 
@@ -29,11 +33,76 @@ int main()
 		//std::cout << std::string(20, '-') << std::endl;
 		//UDPClient("127.0.0.1", remotePort, localPort);
 
-		TCPClient();
+		TCPClientWithBenchmarking();
 	}
 	Network::shutdown();
 	system("pause");
 	return 0;
+}
+
+// ------------- TCP with Benchmarking -------------------
+PResult TCPSendWithBenchmarking(TCPSocket& socket, const uint64_t messageSize, uint64_t& bytesSent)
+{
+	std::string message(messageSize, 'a');
+	if (message.empty())
+	{
+		return PResult::P_GENERIC_ERROR;
+	}
+
+	uint64_t bufferSize = htonll(static_cast<uint64_t>(message.size()));
+	if (socket.sendAll(&bufferSize, sizeof(uint64_t)) != PResult::P_SUCCESS)
+	{
+		return PResult::P_GENERIC_ERROR;
+	}
+	bytesSent += sizeof(uint64_t);
+
+	if (socket.sendAll(message.data(), message.size()) != PResult::P_SUCCESS)
+	{
+		return PResult::P_GENERIC_ERROR;
+	}
+
+	bytesSent += messageSize;
+	return PResult::P_SUCCESS;
+}
+
+void TCPClientWithBenchmarking()
+{
+	std::cout << "Winsock API initialized successfully." << std::endl;
+	TCPSocket socket;
+	if (socket.create() == PResult::P_SUCCESS)
+	{
+		std::cout << "Socket created successfully." << std::endl;
+		if (socket.connect(IPEndpoint("192.168.0.104", 8080)) == PResult::P_SUCCESS)
+		{
+			std::cout << "Socket connected successfully." << std::endl;
+			uint64_t messageSize = 80 * KB;
+			uint64_t bytesSent = 0;
+			auto startTime = std::chrono::high_resolution_clock::now();
+			for (int i = 0; i < 10024; ++i)
+			{
+				if (TCPSendWithBenchmarking(socket, messageSize, bytesSent) != PResult::P_SUCCESS)
+				{
+					std::cerr << "Failed to send message." << std::endl;
+					return;
+				}
+			}
+			auto endTime = std::chrono::high_resolution_clock::now();
+			std::cout << "Message sent successfully." << std::endl;
+			std::chrono::duration<double> elapsedTime = std::chrono::duration_cast<std::chrono::duration<double>>(endTime - startTime);
+			double speedMBps = (static_cast<double>(bytesSent) / static_cast<double>(MB)) / elapsedTime.count();
+			std::cout << "Benchmark: Speed: " << speedMBps << "MB/sec." << std::endl;
+			socket.close();
+		}
+		else
+		{
+			std::cerr << "Failed to connect to the server." << std::endl;
+		}
+		socket.close();
+	}
+	else
+	{
+		std::cerr << "Failed to create socket." << std::endl;
+	}
 }
 
 // ------------- TCP --------------------------------
