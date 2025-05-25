@@ -70,7 +70,7 @@ void TCPServerWithBenchmarking()
 				std::cout << "Client connected." << std::endl;
 				uint64_t bytesReceived = 0;
 				auto startTime = std::chrono::high_resolution_clock::now();
-				for (size_t i = 0; i < 10024; ++i)
+				for (size_t i = 0; i < 1024; ++i)
 				{
 					if (TCPReceiveWithBenchmarking(newConnection, bytesReceived) != PResult::P_SUCCESS)
 					{

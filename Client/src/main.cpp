@@ -12,7 +12,7 @@ using namespace CNet;
 std::mutex consoleMutex;
 
 void TCPClient();
-PResult TCPSendWithBenchmarking(TCPSocket& socket, const uint64_t messageSize);
+PResult TCPSendWithBenchmarking(TCPSocket& socket, const uint64_t messageSize, uint64_t& bytesSent);
 void TCPClientWithBenchmarking();
 //void UDPClient();
 void UDPClient(const std::string& remoteIP, uint16_t remotePort, uint16_t localPort);
@@ -72,13 +72,13 @@ void TCPClientWithBenchmarking()
 	if (socket.create() == PResult::P_SUCCESS)
 	{
 		std::cout << "Socket created successfully." << std::endl;
-		if (socket.connect(IPEndpoint("192.168.0.104", 8080)) == PResult::P_SUCCESS)
+		if (socket.connect(IPEndpoint("127.0.0.1", 8080)) == PResult::P_SUCCESS)
 		{
 			std::cout << "Socket connected successfully." << std::endl;
 			uint64_t messageSize = 80 * KB;
 			uint64_t bytesSent = 0;
 			auto startTime = std::chrono::high_resolution_clock::now();
-			for (int i = 0; i < 10024; ++i)
+			for (int i = 0; i < 1024; ++i)
 			{
 				if (TCPSendWithBenchmarking(socket, messageSize, bytesSent) != PResult::P_SUCCESS)
 				{
