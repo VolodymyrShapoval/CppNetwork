@@ -1,7 +1,7 @@
 #pragma once
-
 #include <string>
 #include "IncludeFile.h"
+#include "Response.h"
 #include <iostream>
 #include <thread>
 #include <regex>
@@ -104,8 +104,8 @@ namespace CNet
 			std::cout << "Received request: " << method << " " << path << std::endl;
 			std::cout << "Request content:\n" << request << std::endl;
 
-            /*Response response;
-            Request req;*/
+            Response response;
+            //Request req;
 
             /*if (path.find('?') != std::string::npos) 
             {
@@ -156,7 +156,7 @@ namespace CNet
 
             //// Serve static files if not matched by any route
             //serve_static_file(path, response);
-            //send_response(client_socket, response);
+            send_response(client_socket, response);
 			client_socket.close(); // Close the client socket after handling the request
         }
 
@@ -216,14 +216,15 @@ namespace CNet
             return request;
         }
 
-        /*void send_response(SOCKET client_socket, Response response) {
+        void send_response(TCPSocket client_socket, Response response) {
             response.header("Content-Length", std::to_string(response.body.size()));
             response.header("X-Powered-By", "Xebec-Server/0.1.0");
             response.header("Programming-Language", "C++");
             response.headers += "\r\n";
             std::string res = "HTTP/1.1 " + response.status + response.headers + response.body;
-            send(client_socket, res.c_str(), res.size(), 0);
-        }*/
+			int bytesSent = 0;
+			client_socket.sendAll(res.c_str(), res.size());
+        }
 
     };
 }
