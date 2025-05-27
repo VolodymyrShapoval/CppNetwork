@@ -9,6 +9,7 @@
 #include <sstream>
 #include <functional>
 #include <map>
+#include <openssl/ssl.h>
 
 namespace CNet
 {
@@ -25,21 +26,14 @@ namespace CNet
 	class HTTP_Server
 	{
     public:
-        HTTP_Server()
+        HTTP_Server(std::string& executable_path)
         {
-			Network::initialize(); // Initialize Winsock
+			setPublicDirPath(executable_path);
         }
 
 		~HTTP_Server() 
         {
-			Network::shutdown(); // Clean up Winsock
 		}
-
-        // // Set the public directory path
-        // inline void publicDir(const std::string& dir) 
-        // {
-        //     publicDirPath = dir;
-        // }
 
         // Start the server on the specified port
         PResult start(int port) 
@@ -51,7 +45,7 @@ namespace CNet
 				return PResult::P_GENERIC_ERROR;
 			}
             
-			if (listen_socket.listen(IPEndpoint("10.211.55.4", port)) != PResult::P_SUCCESS) {
+			if (listen_socket.listen(IPEndpoint("192.168.0.105", port)) != PResult::P_SUCCESS) {
 				std::cerr << "Failed to listen on port " << port << std::endl;
 				int error = WSAGetLastError();
                 listen_socket.close();
@@ -89,7 +83,25 @@ namespace CNet
         // Map to store the routes
         std::map<std::string, std::map<std::string, std::pair<std::string, std::function<void(Request&, Response&)>>>> routes;
         // Path to the public directory
-        std::string publicDirPath = "public";
+        std::string publicDirPath;
+
+        void setPublicDirPath(const std::string& executable_path) 
+        {
+            // «находимо позиц≥ю останнього слешу
+            size_t lastSlashPos = executable_path.find_last_of("/\\");
+
+            // якщо слеш знайдено Ч формуЇмо шл€х до папки public
+            if (lastSlashPos != std::string::npos) 
+            {
+                std::string basePath = executable_path.substr(0, lastSlashPos + 1);
+                publicDirPath = basePath + "public/";
+            }
+            else 
+            {
+                // якщо шл€х не м≥стить слеш≥в, вважаЇмо, що executable в поточн≥й директор≥њ
+                publicDirPath = "public/";
+            }
+		}
 
         // Add event handler to the routes map
         void assignHandler(const std::string& method, const std::string& path, std::function<void(Request&, Response&)> callback) {

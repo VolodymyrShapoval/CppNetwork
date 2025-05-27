@@ -3,13 +3,17 @@
 
 using namespace CNet;
 
-int main()
+void startHTTP_Server(std::string executable_path);
+
+int main(int argc, char* argv[])
 {
 	try
 	{
-		HTTP_Server server;
-		server.start(80);
-
+		if(Network::initialize())
+		{
+			startHTTP_Server(argv[0]);
+		}
+		
 	}
 	catch (const std::exception& e)
 	{
@@ -18,4 +22,10 @@ int main()
 	}
 
 	return 0;
+}
+
+void startHTTP_Server(std::string executable_path)
+{
+	HTTP_Server server(executable_path);
+	server.start(80);
 }
